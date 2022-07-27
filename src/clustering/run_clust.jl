@@ -408,7 +408,7 @@ function run_clust_hierarchical(
     _dist::SemiMetric = SqEuclidean()
     )
 
-    d_mat=pairwise(_dist,data; dims=2)
+    d_mat=Distances.pairwise(_dist,data; dims=2)
     r=hclust(d_mat,linkage=:ward_presquared)
     clustids = cutree(r,k=n_clust)
     weights = calc_weights(clustids,n_clust)

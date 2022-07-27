@@ -6,5 +6,6 @@
 *.swo
 *.eps
 *.png
+Manifest.toml
 test.jl
 docs/build/

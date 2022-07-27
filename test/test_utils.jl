@@ -12,9 +12,9 @@ function test_ClustData(t::ClustData,ref::ClustData)
     @test all(t.delta_t .≈ ref.delta_t)
     @test all(t.k_ids .≈ ref.k_ids)
     for (k,v) in t.data
-        @test all(t.data[k] .≈ ref.data[k])
-        @test all(t.mean[k] .≈ ref.mean[k])
-        @test all(t.sdv[k] .≈ ref.sdv[k])
+        @test all(isapprox.(t.data[k], ref.data[k]), rtol=1e-3)
+        @test all(isapprox.(t.mean[k], ref.mean[k]), rtol=1e-3)
+        @test all(isapprox.(t.sdv[k], ref.sdv[k]), rtol=1e-3)
     end
 end
 

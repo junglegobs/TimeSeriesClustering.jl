@@ -149,7 +149,7 @@ end
         find_column_name(df::DataFrame, name_itr::Arrray{Symbol,1})
 find wich of the supported name in `name_itr` is used as an
 """
-function find_column_name(df::DataFrame, name_itr::Array{Symbol,1}; error::Bool=true)
+function find_column_name(df::DataFrame, name_itr::Array{Symbol,1}; err::Bool=true)
     col_name=:none
     for name in name_itr
         if name in names(df)
@@ -157,7 +157,7 @@ function find_column_name(df::DataFrame, name_itr::Array{Symbol,1}; error::Bool=
             break
         end
     end
-    if error
+    if err
         col_name!=:none || error("No $(name_itr) in $(repr(df)).")
     else
         col_name!=:none || @warn "No $(name_itr) in $(repr(df))."

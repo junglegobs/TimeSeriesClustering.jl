@@ -127,19 +127,21 @@ function add_timeseries_data!(dt::Dict{String,Array},
                             T::Int=24,
                             years::Array{Int,1}=[2016])
     # find the right years to select
-    time_name=find_column_name(data, [:Timestamp, :timestamp, :Time, :time, :Zeit, :zeit, :Date, :date, :Datum, :datum]; error=false)
+    time_name=find_column_name(data, [:Timestamp, :timestamp, :Time, :time, :Zeit, :zeit, :Date, :date, :Datum, :datum]; err_bool=false)
     year_name=find_column_name(data, [:year, :Year, :jahr, :Jahr])
-    data_selected=data[in.(data[year_name],[years]),:]
-    for column in eachcol(data_selected, true)
+    data_selected=data[in.(data[!,year_name],[years]),:]
+    for i in axes(data_selected, 2)
+        column_name = names(data_selected)[i]
         # check that this column isn't time or year
-        if !(column[1] in [time_name, year_name])
-            K_calc=Int(floor(length(column[2])/T))
+        if !(column_name in string.([time_name, year_name]))
+            column = data_selected[:,i]
+            K_calc=Int(floor(length(column)/T))
             if K_calc!=K && K!=0
                 error("The time_series $(column[1]) has K=$K_calc != K=$K of the previous")
             else
                 K=K_calc
             end
-            dt[data_name*"-"*string(column[1])]=Float64.(column[2][1:(Int(T*K))])
+            dt[data_name*"-"*string(column_name)]=Float64.(column[1:(Int(T*K))])
         end
     end
     return K
@@ -149,18 +151,18 @@ end
         find_column_name(df::DataFrame, name_itr::Arrray{Symbol,1})
 find wich of the supported name in `name_itr` is used as an
 """
-function find_column_name(df::DataFrame, name_itr::Array{Symbol,1}; err::Bool=true)
+function find_column_name(df::DataFrame, name_itr::Array{Symbol,1}; err_bool::Bool=true)
     col_name=:none
     for name in name_itr
-        if name in names(df)
+        if string(name) in names(df)
             col_name=name
             break
         end
     end
-    if err
-        col_name!=:none || error("No $(name_itr) in $(repr(df)).")
+    if err_bool
+        col_name!=:none || error("No $(name_itr) in the following data:\n$(first(df)).")
     else
-        col_name!=:none || @warn "No $(name_itr) in $(repr(df))."
+        col_name!=:none || @warn "No $(name_itr) in the following data:\n$(first(df))."
     end
     return col_name
 end

@@ -6,7 +6,7 @@ ts_input_data = load_timeseries_data(:CEP_GER1)
 
 using Cbc
 optimizer = Cbc.Optimizer
-out = run_clust(ts_input_data;method="kmedoids_exact",representation="medoid",n_clust=ts_input_data.5,n_init=1,kmexact_optimizer=optimizer)
+out = run_clust(ts_input_data;method="kmedoids_exact",representation="medoid",n_clust=5,n_init=1,kmexact_optimizer=optimizer)
 
 
 using Gurobi
